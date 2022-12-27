@@ -14001,35 +14001,14 @@
                   Object(en.jsx)("img", {
                     src: "/static/media/logo.png",
                     title: "bubbleswap",
-                    width: "220",
+                    width: "180",
                   }),
                   Object(en.jsx)(Ih, {}),
                 ],
               }),
             }),
             Object(en.jsxs)(cf, {
-              children: [
-                Object(en.jsx)(pf, {
-                  id: "swap-nav-link",
-                  to: "/swap",
-                  children: Object(en.jsx)(ln.b, { id: "Swap" }),
-                }),
-                Object(en.jsx)(pf, {
-                  id: "pool-nav-link",
-                  to: "/pool",
-                  isActive: function (e, t) {
-                    var n = t.pathname;
-                    return (
-                      Boolean(e) ||
-                      n.startsWith("/add") ||
-                      n.startsWith("/remove") ||
-                      n.startsWith("/increase") ||
-                      n.startsWith("/find")
-                    );
-                  },
-                  children: Object(en.jsx)(ln.b, { id: "Pool" }),
-                }),
-              ],
+              children: [],
             }),
             Object(en.jsxs)(of, {
               children: [
