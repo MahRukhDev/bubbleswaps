@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html translate="no">
+  <head>
+    <meta charset="utf-8" />
+    <title>BubbleSwap</title>
+    <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/favicon.png" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <meta name="theme-color" content="#ff007a" />
+    <link rel="manifest" href="/manifest.json" />
+    <link
+      rel="preload"
+      href="/fonts/Inter-roman.var.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <style>
+      * {
+        font-family: Inter, sans-serif;
+        box-sizing: border-box;
+      }
+      @font-face {
+        font-family: "Inter custom";
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: block;
+        font-named-instance: Regular;
+        src: url(/fonts/Inter-roman.var.woff2)
+            format("woff2 supports variations(gvar)"),
+          url(/fonts/Inter-roman.var.woff2) format("woff2-variations"),
+          url(/fonts/Inter-roman.var.woff2) format("woff2");
+      }
+      @supports (font-variation-settings: normal) {
+        * {
+          font-family: "Inter custom", sans-serif;
+        }
+      }
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+      }
+      button {
+        user-select: none;
+      }
+      html {
+        font-size: 16px;
+        font-variant: none;
+        font-smooth: always;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-tap-highlight-color: transparent;
+        font-feature-settings: "ss01" on, "ss02" on, "cv01" on, "cv03" on;
+      }
+      #background-radial-gradient {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        pointer-events: none;
+        width: 200vw;
+        height: 200vh;
+        background: radial-gradient(
+          50% 50% at 50% 50%,
+          #fc077d10 0,
+          rgba(255, 255, 255, 0) 100%
+        );
+        transform: translate(-50vw, -100vh);
+        z-index: -1;
+      }
+      html {
+        min-height: 100%;
+      }
+      @media (prefers-color-scheme: dark) {
+        html {
+          background-color: #dfbfff;
+        }
+      }
+      @media (prefers-color-scheme: light) {
+        html {
+          background-color: #f7f8fa;
+        }
+      }
+
+      .sidenav {
+        width: 130px;
+        position: fixed;
+        z-index: 1;
+        top: 101px;
+        left: 43px;
+        width: 95px;
+        height: 600px;
+        background: #ffffff;
+        border-radius: 54px;
+        opacity: 2.49;
+        overflow-x: hidden;
+        padding: 8px 0;
+      }
+
+      .sidenav a {
+        padding: 22px 8px 6px 16px;
+        text-decoration: none;
+        font-size: 14px;
+        color: #3e2098;
+        text-align: center;
+        display: block;
+      }
+      .mobileShow {
+        display: none;
+      }
+      .sidenav a:hover {
+        color: #653ddc;
+        width: 80px;
+        height: 97px;
+        background: #ffffff;
+        box-shadow: 0px 0px 20px 0px rgba(149, 158, 207, 0.5),
+          inset 1px 1px 4px 3px #cca1fa;
+        border-radius: 40px;
+        opacity: 2.49;
+        filter: blur(0px);
+      }
+
+      .main {
+        margin-left: 140px; /* Same width as the sidebar + left position in px */
+        font-size: 28px; /* Increased text to enable scrolling */
+        padding: 0px 10px;
+      }
+
+      @media screen and (max-width: 700px) {
+        .sidenav {
+          width: 20%;
+          height: auto;
+          position: fixed;
+          display: block;
+          align-items: verticla;
+        }
+        .sidenav a {
+          float: left;
+        }
+        div.content {
+          margin-left: 0;
+        }
+      }
+      @media screen and (max-height: 450px) {
+        .sidenav {
+          padding-top: 15px;
+          display: row;
+        }
+        .sidenav a {
+          font-size: 18px;
+        }
+      }
+      @media screen and (max-width: 400px) {
+        .sidevac a {
+          text-align: center;
+          float: none;
+          display: table-row;
+        }
+      }
+
+      #content-desktop {
+        display: block;
+      }
+      #content-mobile {
+        display: none;
+      }
+
+      @media screen and (max-width: 768px) {
+        #content-desktop {
+          display: none;
+        }
+        #content-mobile {
+          display: block;
+        }
+      }
+
+      .top {
+        color: #3e2098;
+        background: white;
+        border-radius: 25px;
+        font-size: 8px;
+        width: 380px;
+        padding: 10px;
+        position: fixed;
+        margin: 57px 5px 0px 0px;
+      }
+
+      .top a {
+        padding: 0px 15px 0px 29px;
+        text-decoration: none;
+        margin: 8px -31px 0px 15px;
+        font-size: 9px;
+        color: #3e2098;
+        text-align: center;
+        display: inline;
+      }
+
+      /* Boring button styles */
+      a.button {
+        /* Frame */
+        display: inline-block;
+        padding: 20px 28px;
+        border-radius: 50px;
+        box-sizing: border-box;
+
+        /* Style */
+        border: none;
+
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      a.button:active {
+        filter: brightness(75%);
+      }
+
+      /* Dropdown styles */
+      .dropdown {
+        position: relative;
+        padding: 0;
+        margin-right: 1em;
+
+        border: none;
+      }
+
+      .dropdown summary {
+        list-style: none;
+        list-style-type: none;
+      }
+
+      .dropdown > summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .dropdown summary:focus {
+        outline: none;
+      }
+
+      .dropdown summary:focus a.button {
+        border: 2px solid white;
+      }
+
+      .dropdown summary:focus {
+        outline: none;
+      }
+
+      .dropdown ul {
+        position: fixed;
+        margin: -280px 0px 0px 0px;
+        background-color: #ffffff;
+        color: #44146b;
+        padding: 14px 0;
+        width: var(--dropdown-width);
+        left: 11%;
+        margin-left: calc((var(--dropdown-width) / 2) * -1);
+        box-sizing: border-box;
+        z-index: 9;
+
+        border-radius: 12px;
+        list-style: none;
+      }
+      .dropdown ul a:hover {
+        color: #653ddc;
+        width: 80px;
+        height: 37px;
+        background: #ffffff;
+        box-shadow: 0px 0px 20px 0px rgba(149, 158, 207, 0.5),
+          inset 1px 1px 4px 3px #cca1fa;
+        border-radius: 40px;
+        opacity: 2.49;
+        filter: blur(0px);
+      }
+
+      .dropdown ul li {
+        padding: 0;
+        margin: 0;
+      }
+
+      .dropdown ul li a:link,
+      .dropdown ul li a:visited {
+        display: inline-block;
+        padding: 10px 0.8rem;
+        width: 100%;
+        text-align: left;
+        box-sizing: border-box;
+
+        color: var(--dropdown-color);
+        text-decoration: none;
+      }
+
+      /* Close the dropdown with outside clicks */
+      .dropdown > summary::before {
+        display: none;
+      }
+
+      .dropdown[open] > summary::before {
+        content: " ";
+        display: block;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1;
+      }
+    </style>
+    <link href="/static/css/35.2d29cc29.chunk.css" rel="stylesheet" />
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"><div>&emsp;</div></div>
+
+    <div id="content-desktop" class="sidenav">
+      <a href="/home.html"
+        ><img src="/icons/home.png" style="width: 52px; height: 52px" />Home</a
+      >
+      <a href="/swap"
+        ><img src="/icons/swap.png" style="width: 52px; height: 52px" />Swap</a
+      >
+      <a href="/pool">
+        <img src="/icons/liq.png" style="width: 42px; height: 42px" />
+        Liquidity</a
+      >
+      <a href="https://bubbleswapdao.netlify.app/#/1/earn/farming"
+        ><img
+          src="/icons/mining.png"
+          style="width: 42px; height: 42px"
+        />Mining</a
+      >
+      <a href="https://bubbleswapdao.netlify.app/#/1/dao/staking">
+        <img src="/icons/dao.png" style="width: 52px; height: 52px" />Stake</a
+      >
+
+      <details class="dropdown">
+        <summary role="button">
+          <a>
+            <img
+              src="/icons/more.png"
+              style="width: 52px; height: 42px"
+            />More</a
+          >
+        </summary>
+        <ul>
+          <li>
+            <a href="https://docs.bubbleswap.co/developers/contrats-address">
+              <img
+                src="/icons/contract.png"
+                style="width: 22px; height: 22px; margin: -2px 17px -7px 0px"
+              />
+              Smart Contract</a
+            >
+          </li>
+          <li>
+            <a href="https://www.certik.com/bubbleswap">
+              <img
+                src="/icons/audit.png"
+                style="width: 22px; height: 22px; margin: -2px 17px -7px 0px"
+              />
+              Audit</a
+            >
+          </li>
+          <li>
+            <a href="#">
+              <img
+                src="/icons/chart.png"
+                style="width: 22px; height: 22px; margin: -2px 17px -7px 0px"
+              />
+              Chart</a
+            >
+          </li>
+          <li>
+            <a href="https://twitter.com/bubbleswapdao">
+              <img
+                src="/icons/twitter.png"
+                style="width: 22px; height: 22px; margin: -2px 17px -7px 0px"
+              />
+              Twitter</a
+            >
+          </li>
+
+          <li>
+            <a href="https://discord.com/invite/KYThgn597y">
+              <img
+                src="/icons/discord.png"
+                style="width: 22px; height: 22px; margin: -2px 17px -7px 0px"
+              />Discord</a
+            >
+          </li>
+          <li>
+            <a href="mailto:contact@bubbleswap.co"
+              ><img
+                src="/icons/mail.png"
+                style="width: 22px; height: 22px; margin: -2px 17px -7px 0px"
+              />
+              Contact Us</a
+            >
+          </li>
+        </ul>
+      </details>
+    </div>
+
+    <div id="content-mobile" class="top">
+      <a href="home.html"
+        ><img
+          src="/icons/home.png"
+          style="width: 32px; height: 32px; margin: 0px -26px 11px 0px"
+        />Home</a
+      >
+      <a href="/swap"
+        ><img
+          src="/icons/swap.png"
+          style="width: 32px; height: 32px; margin: 0px -26px 11px 0px"
+        />Swap</a
+      >
+      <a href="/pool">
+        <img
+          src="/icons/liq.png"
+          style="width: 32px; height: 32px; margin: 0px -26px 11px 0px"
+        />
+        Liquidity</a
+      >
+      <a href="https://bubbleswapdao.netlify.app/#/1/earn/farming"
+        ><img
+          src="/icons/mining.png"
+          style="width: 32px; height: 32px; margin: 0px -26px 11px 0px"
+        />Mining</a
+      >
+      <a href="https://bubbleswapdao.netlify.app/#/1/dao/staking">
+        <img
+          src="/icons/dao.png"
+          style="width: 32px; height: 32px; margin: 0px -26px 11px 0px"
+        />Stake</a
+      >
+    </div>
+
+    <div id="background-radial-gradient"></div>
+    <script>
+      !(function (e) {
+        function r(r) {
+          for (
+            var n, o, f = r[0], u = r[1], i = r[2], d = 0, l = [];
+            d < f.length;
+            d++
+          )
+            (o = f[d]),
+              Object.prototype.hasOwnProperty.call(a, o) &&
+                a[o] &&
+                l.push(a[o][0]),
+              (a[o] = 0);
+          for (n in u)
+            Object.prototype.hasOwnProperty.call(u, n) && (e[n] = u[n]);
+          for (b && b(r); l.length; ) l.shift()();
+          return c.push.apply(c, i || []), t();
+        }
+        function t() {
+          for (var e, r = 0; r < c.length; r++) {
+            for (var t = c[r], n = !0, f = 1; f < t.length; f++) {
+              var u = t[f];
+              0 !== a[u] && (n = !1);
+            }
+            n && (c.splice(r--, 1), (e = o((o.s = t[0]))));
+          }
+          return e;
+        }
+        var n = {},
+          a = { 34: 0 },
+          c = [];
+        function o(r) {
+          if (n[r]) return n[r].exports;
+          var t = (n[r] = { i: r, l: !1, exports: {} });
+          return e[r].call(t.exports, t, t.exports, o), (t.l = !0), t.exports;
+        }
+        (o.e = function (e) {
+          var r = [],
+            t = a[e];
+          if (0 !== t)
+            if (t) r.push(t[2]);
+            else {
+              var n = new Promise(function (r, n) {
+                t = a[e] = [r, n];
+              });
+              r.push((t[2] = n));
+              var c,
+                f = document.createElement("script");
+              (f.charset = "utf-8"),
+                (f.timeout = 120),
+                o.nc && f.setAttribute("nonce", o.nc),
+                (f.src = (function (e) {
+                  return (
+                    o.p +
+                    "static/js/" +
+                    ({}[e] || e) +
+                    "." +
+                    {
+                      0: "b2ae6efd",
+                      1: "680a935f",
+                      2: "13f67a5d",
+                      3: "47d96c11",
+                      4: "1f517d3b",
+                      5: "1feeb4e5",
+                      6: "d11353a5",
+                      7: "d2afc586",
+                      8: "45d89777",
+                      9: "e8be0682",
+                      10: "ef6f705f",
+                      11: "6e76f7a1",
+                      12: "a993ab1a",
+                      13: "0b329196",
+                      14: "9b040b54",
+                      15: "60dd4000",
+                      16: "49d55dc7",
+                      17: "54f87bcd",
+                      18: "9ae085f9",
+                      19: "bc8a88b6",
+                      20: "4ee1a49b",
+                      21: "1f7aa53a",
+                      22: "1e36872d",
+                      23: "b6217e9e",
+                      24: "4402207a",
+                      25: "acc6a3e9",
+                      26: "6eef8466",
+                      27: "862801de",
+                      28: "21345026",
+                      29: "3c06f232",
+                      30: "c27527d7",
+                      31: "046cc95c",
+                      32: "d8c70e06",
+                      36: "7974b806",
+                      37: "2736bdee",
+                      38: "b3ee57e9",
+                      39: "300be6cb",
+                      40: "f0347107",
+                      41: "eff7b113",
+                      42: "bfffdd0a",
+                      43: "110aae11",
+                      44: "1bf3560f",
+                      45: "b10f7e2f",
+                      46: "55a431a0",
+                      47: "e09d5353",
+                      48: "4c09279e",
+                      49: "ee0d81e4",
+                      50: "83ffceb2",
+                      51: "cc30a7fa",
+                      52: "359524b2",
+                      53: "368f86a3",
+                      54: "37c03204",
+                      55: "bebc3537",
+                      56: "60e714ce",
+                      57: "37e348b3",
+                      58: "ca34402f",
+                      59: "58482eb0",
+                      60: "fe5428ee",
+                      61: "de7e8903",
+                      62: "6325e2c4",
+                      63: "137bb1e0",
+                      64: "e0620491",
+                      65: "daaeffc4",
+                      66: "675fbac4",
+                      67: "c3e575c6",
+                      68: "05bbcc8f",
+                      69: "f741869b",
+                      70: "a94a5404",
+                      71: "4288f9cc",
+                      72: "c883ee81",
+                      73: "2425183f",
+                      74: "d0860c73",
+                      75: "29b500bc",
+                      76: "60697000",
+                      77: "1ece5c8e",
+                    }[e] +
+                    ".chunk.js"
+                  );
+                })(e));
+              var u = new Error();
+              c = function (r) {
+                (f.onerror = f.onload = null), clearTimeout(i);
+                var t = a[e];
+                if (0 !== t) {
+                  if (t) {
+                    var n = r && ("load" === r.type ? "missing" : r.type),
+                      c = r && r.target && r.target.src;
+                    (u.message =
+                      "Loading chunk " +
+                      e +
+                      " failed.\n(" +
+                      n +
+                      ": " +
+                      c +
+                      ")"),
+                      (u.name = "ChunkLoadError"),
+                      (u.type = n),
+                      (u.request = c),
+                      t[1](u);
+                  }
+                  a[e] = void 0;
+                }
+              };
+              var i = setTimeout(function () {
+                c({ type: "timeout", target: f });
+              }, 12e4);
+              (f.onerror = f.onload = c), document.head.appendChild(f);
+            }
+          return Promise.all(r);
+        }),
+          (o.m = e),
+          (o.c = n),
+          (o.d = function (e, r, t) {
+            o.o(e, r) ||
+              Object.defineProperty(e, r, { enumerable: !0, get: t });
+          }),
+          (o.r = function (e) {
+            "undefined" != typeof Symbol &&
+              Symbol.toStringTag &&
+              Object.defineProperty(e, Symbol.toStringTag, { value: "Module" }),
+              Object.defineProperty(e, "__esModule", { value: !0 });
+          }),
+          (o.t = function (e, r) {
+            if ((1 & r && (e = o(e)), 8 & r)) return e;
+            if (4 & r && "object" == typeof e && e && e.__esModule) return e;
+            var t = Object.create(null);
+            if (
+              (o.r(t),
+              Object.defineProperty(t, "default", { enumerable: !0, value: e }),
+              2 & r && "string" != typeof e)
+            )
+              for (var n in e)
+                o.d(
+                  t,
+                  n,
+                  function (r) {
+                    return e[r];
+                  }.bind(null, n)
+                );
+            return t;
+          }),
+          (o.n = function (e) {
+            var r =
+              e && e.__esModule
+                ? function () {
+                    return e.default;
+                  }
+                : function () {
+                    return e;
+                  };
+            return o.d(r, "a", r), r;
+          }),
+          (o.o = function (e, r) {
+            return Object.prototype.hasOwnProperty.call(e, r);
+          }),
+          (o.p = "/"),
+          (o.oe = function (e) {
+            throw (console.error(e), e);
+          });
+        var f = (this["webpackJsonp@uniswap/interface"] =
+            this["webpackJsonp@uniswap/interface"] || []),
+          u = f.push.bind(f);
+        (f.push = r), (f = f.slice());
+        for (var i = 0; i < f.length; i++) r(f[i]);
+        var b = u;
+        t();
+      })([]);
+    </script>
+    <script src="/static/js/35.f1d89a99.chunk.js"></script>
+    <script src="/static/js/main.de4155b0.chunk.js"></script>
+  </body>
+</html>
