@@ -10420,9 +10420,9 @@
                               ],
                             }),
                             Object(en.jsxs)(jb, {
-                              href: "https://docs.bubbleswap.co/developers/contrats-address",
+                              href: "/pool",
                               children: [
-                                "Docs",
+                                "pool",
                                 Object(en.jsx)(Qu.a, {
                                   opacity: 0.6,
                                   size: 16,
@@ -14008,7 +14008,28 @@
               }),
             }),
             Object(en.jsxs)(cf, {
-              children: [],
+              children: [
+                Object(en.jsx)(pf, {
+                  id: "swap-nav-link",
+                  to: "/swap",
+                  children: Object(en.jsx)(ln.b, { id: "Swap" }),
+                }),
+                Object(en.jsx)(pf, {
+                  id: "pool-nav-link",
+                  to: "/pool",
+                  isActive: function (e, t) {
+                    var n = t.pathname;
+                    return (
+                      Boolean(e) ||
+                      n.startsWith("/add") ||
+                      n.startsWith("/remove") ||
+                      n.startsWith("/increase") ||
+                      n.startsWith("/find")
+                    );
+                  },
+                  children: Object(en.jsx)(ln.b, { id: "Pool" }),
+                }),
+              ],
             }),
             Object(en.jsxs)(of, {
               children: [
